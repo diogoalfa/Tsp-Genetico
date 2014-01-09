@@ -43,42 +43,43 @@ public class Permutar
               List<String> nuevaPoblacion=new ArrayList();
               String hija1;
               String hija2;
-               List<String> hijas=new ArrayList();
+              List<String> hijas=new ArrayList();
+              String mejorSolucion;
+              double mejorFitness;
               
               llenarPoblacionEstocastico(poblacion,p,rnd,cantidadHabitantes);
-             // imprimirPoblacion(poblacion);
-              
-              String hab1=poblacion.get(rnd.nextInt(cantidadHabitantes));
-              String hab2=poblacion.get(rnd.nextInt(cantidadHabitantes));
-              
-              System.out.println(" Habitante 1 :"+hab1);
-              System.out.println(" Habitante 1 :"+hab2);
+             //imprimirPoblacion(poblacion);
               
               
-              if (rnd.nextInt(100)<=49) {
-              
+            hijas=cruce(poblacion.get(0),poblacion.get(1),rnd.nextInt(largoSolucion));
+           
+            
+            for (int i = 0; i < 10; i++) {
+                String hab1 = poblacion.get(rnd.nextInt(cantidadHabitantes));
+                String hab2 = poblacion.get(rnd.nextInt(cantidadHabitantes));
+
+                System.out.println(" Habitante 1 :" + hab1);
+                System.out.println(" Habitante 2 :" + hab2);
+                if (rnd.nextInt(100)<=49) {
                  hijas=cruce(hab1,hab2,rnd.nextInt(largoSolucion));
-                
-              }
-              
-            
-            hija1=hijas.get(0);
-            hija2=hijas.get(1);
-            hijas.clear();
-            
-            
-            nuevaPoblacion.add(hija1);
-            nuevaPoblacion.add(hija2);
-            
-            System.out.println(hijas);
-            
-            
+                }
+                System.out.println(hijas);
+                mejorSolucion=mejorDeLaPoblacion(lista,hijas);
+                System.out.println("M solucion :"+mejorSolucion);
+                mejorFitness=fitness(lista,mejorSolucion);
+                System.out.println("MEJOR SOLUCION : "+mejorSolucion+" - FITNESS : "+mejorFitness);
+
+                hija1=mutacion(hijas.get(0),rnd);
+                hija2=mutacion(hijas.get(1),rnd);
+               // hijas.clear();
+
+                nuevaPoblacion.add(hija1);
+                nuevaPoblacion.add(hija2);
+          }
             
               
 //--------------------------------Gradiente Ascendente-------------------------------------------------------- 
-            
-              
-              
+               
            /*   
               
              String solMejor=solAleatoria;
@@ -169,11 +170,18 @@ public class Permutar
          
 	}
         
-        public static String mejorDeLaPoblacion(Map<String, Ciudad> lista, String p){
-            int mejorFitness=poblacion.get(0);
-            for (int i = 0; i < 10; i++) {
-                
+        public static String mejorDeLaPoblacion(Map<String, Ciudad> lista,List<String> poblacion){
+            double mejorFitness=fitness(lista,poblacion.get(0));
+            String mejorSolucion=poblacion.get(0);
+            double fitnessHab;
+            for (int i = 0; i < poblacion.size(); i++) {
+                fitnessHab=fitness(lista,poblacion.get(i));
+                if (mejorFitness<fitnessHab) {
+                    mejorSolucion=poblacion.get(i);
+                    mejorFitness=fitnessHab;
+                }
             }
+            return mejorSolucion;
         }
         
         public static String mutacion(String habitante,Random rnd){
@@ -199,7 +207,7 @@ public class Permutar
         }
         
         public static List<String> cruce(String hab1,String hab2,int dado){
-            System.out.println("DADO : "+dado);
+            //System.out.println("DADO : "+dado);
             List<String> hijas =new ArrayList();
             String habTemp1 ="";
             String habTemp2 ="";
@@ -214,11 +222,10 @@ public class Permutar
                         habTemp1=habTemp1+hab1.charAt(i);
                         habTemp2=habTemp2+hab2.charAt(i);
                         //System.out.println("Sol 1 priori :"+habTemp1);
-            
                  }
              }
-            System.out.println("primero digitos :"+habTemp1);
-            System.out.println("primero digitos :"+habTemp2);
+         //   System.out.println("primero digitos :"+habTemp1);
+         //   System.out.println("primero digitos :"+habTemp2);
             //--------------------------
             
             for (int i = 0; i < hab1.length(); i++) {
