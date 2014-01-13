@@ -12,8 +12,8 @@ public class Permutar
 {
 	public static void main ( String args [])
 	{
-	       //String p ="0123456789abcdefghijklmnopqrstuvwxyz";
-               String p ="abcdefghi";
+	        String p ="0123456789abcdefghijklmnopqrstuvwxyz";
+              // String p ="abcdefghi";
                System.out.println("COMBINACION : "+p);
                 Random rnd = new Random(111);
                 
@@ -26,58 +26,163 @@ public class Permutar
                 }
                 
 //---------------------Solucion Aleatoria--------------------------------------------------------
-             
-                String solAleatoria=newSolAleatoria(p, rnd);
-                System.out.println("Sol Aleatoria :"+solAleatoria);
-               double fitnesAleatoria=fitness(lista, solAleatoria);
-               System.out.println("fitness Aleatoria :"+fitnesAleatoria);
-               
-              String solVecina =getVecina(solAleatoria,rnd);
-              System.out.println("Sol Vecina :"+solVecina);
-               double fitnessVecina=fitness(lista, solVecina);
-              System.out.println("fitnes Vecina :"+fitnessVecina);
-              
+            
+            String solAleatoria = newSolAleatoria(p, rnd);
+            System.out.println("Sol Aleatoria :" + solAleatoria);
+            double fitnesAleatoria = fitness(lista, solAleatoria);
+            System.out.println("fitness Aleatoria :" + fitnesAleatoria);
+
+            String solVecina = getVecina(solAleatoria, rnd);
+            System.out.println("Sol Vecina :" + solVecina);
+            double fitnessVecina = fitness(lista, solVecina);
+            System.out.println("fitnes Vecina :" + fitnessVecina);
+
               int cantidadHabitantes=1000;
               int largoSolucion=p.length();
               List<String> poblacion= new ArrayList();
               List<String> nuevaPoblacion=new ArrayList();
-              String hija1;
-              String hija2;
+              String hija1="";
+              String hija2="";
               List<String> hijas=new ArrayList();
-              String mejorSolucion;
-              double mejorFitness;
+              String mejorSolucion = "";
+              double mejorFitness = 0;
+              List<String> hijasTemp=new ArrayList();
+              int numNuevaPob=50;
               
-              llenarPoblacionEstocastico(poblacion,p,rnd,cantidadHabitantes);
+             // llenarPoblacionEstocastico(poblacion,p,rnd,cantidadHabitantes);
+              llenarConGradienteAscedente(lista,poblacion,p,rnd,100);
              //imprimirPoblacion(poblacion);
               
-              
             hijas=cruce(poblacion.get(0),poblacion.get(1),rnd.nextInt(largoSolucion));
-           
             
-            for (int i = 0; i < 10; i++) {
-                String hab1 = poblacion.get(rnd.nextInt(cantidadHabitantes));
+            for (int i = 0; i < 100; i++) {
+               // System.out.println("--------------------------------ITERACION Nº: "+(i+1)+"--------------------------------------------------------");
+                if (nuevaPoblacion.isEmpty()==true) {
+                     for (int j = 0; j < numNuevaPob; j++) {
+                     String hab1 = poblacion.get(rnd.nextInt(cantidadHabitantes));
                 String hab2 = poblacion.get(rnd.nextInt(cantidadHabitantes));
-
-                System.out.println(" Habitante 1 :" + hab1);
-                System.out.println(" Habitante 2 :" + hab2);
-                if (rnd.nextInt(100)<=49) {
+                
+               // System.out.println(" Habitante 1 :" + hab1);
+               // System.out.println(" Habitante 2 :" + hab2);
+                if(rnd.nextInt(100)<=80) {
                  hijas=cruce(hab1,hab2,rnd.nextInt(largoSolucion));
                 }
-                System.out.println(hijas);
-                mejorSolucion=mejorDeLaPoblacion(lista,hijas);
-                System.out.println("M solucion :"+mejorSolucion);
-                mejorFitness=fitness(lista,mejorSolucion);
-                System.out.println("MEJOR SOLUCION : "+mejorSolucion+" - FITNESS : "+mejorFitness);
-
-                hija1=mutacion(hijas.get(0),rnd);
-                hija2=mutacion(hijas.get(1),rnd);
+                //System.out.println("Hijas sin mutar :"+hijas);
+                hija1=hijas.get(0);
+                hija2=hijas.get(1);
+               // System.out.println("M solucion :"+mejorSolucion);
+                
+               // System.out.println("MEJOR de las Hijas : ["+mejorSolucion+"] - FITNESS : "+mejorFitness);
+                if (rnd.nextInt(100)<=15) {
+                  hija1=mutacion(hijas.get(0),rnd);
+                  
+                }
+                if (rnd.nextInt(100)<=8) {
+                  hija2=mutacion(hijas.get(1),rnd);  
+                }                
+               // System.out.println("Hija mutada 1 : "+hija1+" | Fitness : "+fitness(lista, hija1));System.out.println("Hija mutada 2 : "+hija2+" | Fitness : "+fitness(lista, hija2));
                // hijas.clear();
+                hijas.set(0, hija1);
+                hijas.set(1, hija2);
+                //System.out.println("hijasss ->"+hijas.get(0));
+               // System.out.println(" Coleccion hijas : "+hijas);
+                mejorSolucion=mejorDeLaPoblacion(lista,hijas);
+                mejorFitness=fitness(lista,mejorSolucion);
+              //  System.out.println("MEJOR de las Hijas : ["+mejorSolucion+"] - FITNESS : "+mejorFitness);
 
-                nuevaPoblacion.add(hija1);
-                nuevaPoblacion.add(hija2);
+                
+                    nuevaPoblacion.add(hijas.get(0));
+                    nuevaPoblacion.add(hijas.get(1));
+                }
+                }else{
+                     for (int j = 0; j < numNuevaPob; j++) {
+                     String hab1 = nuevaPoblacion.get(rnd.nextInt(numNuevaPob));
+                String hab2 = nuevaPoblacion.get(rnd.nextInt(numNuevaPob));
+                
+               // System.out.println(" Habitante 1 :" + hab1);
+               // System.out.println(" Habitante 2 :" + hab2);
+                if(rnd.nextInt(100)<=80) {
+                 hijas=cruce(hab1,hab2,rnd.nextInt(largoSolucion));
+                }
+                //System.out.println("Hijas sin mutar :"+hijas);
+                hija1=hijas.get(0);
+                hija2=hijas.get(1);
+               // System.out.println("M solucion :"+mejorSolucion);
+                
+               // System.out.println("MEJOR de las Hijas : ["+mejorSolucion+"] - FITNESS : "+mejorFitness);
+                if (rnd.nextInt(100)<=15) {
+                  hija1=mutacion(hijas.get(0),rnd);
+                  
+                }
+                if (rnd.nextInt(100)<=8) {
+                  hija2=mutacion(hijas.get(1),rnd);  
+                }                
+               // System.out.println("Hija mutada 1 : "+hija1+" | Fitness : "+fitness(lista, hija1));System.out.println("Hija mutada 2 : "+hija2+" | Fitness : "+fitness(lista, hija2));
+               // hijas.clear();
+                hijas.set(0, hija1);
+                hijas.set(1, hija2);
+                //System.out.println("hijasss ->"+hijas.get(0));
+               // System.out.println(" Coleccion hijas : "+hijas);
+                mejorSolucion=mejorDeLaPoblacion(lista,hijas);
+                mejorFitness=fitness(lista,mejorSolucion);
+              //  System.out.println("MEJOR de las Hijas : ["+mejorSolucion+"] - FITNESS : "+mejorFitness);
+
+                
+                    nuevaPoblacion.add(hijas.get(0));
+                    nuevaPoblacion.add(hijas.get(1));
+                }
+                }
+              
+               
           }
             
-              
+            
+            System.out.println("-------------------------------------------------------------------------"); 
+            System.out.println("Mejor Solucion Pobl 1 :"+mejorSolucion+"  |  mejor fitness : "+mejorFitness);
+             String mejorHabitante=mejorDeLaPoblacion(lista, nuevaPoblacion);
+             System.out.println("Mejor de la Poblacion 1: ["+mejorHabitante+"]-Fitness ["+fitness(lista, mejorHabitante)+"]");  
+           System.out.println("-------------------------------------------------------------------------"); 
+            List<String> segundaPoblacion=new ArrayList();
+          /* 
+            for (int i = 0; i < 5000; i++) {
+                String habit1 = poblacion.get(rnd.nextInt(cantidadHabitantes));
+                String habit2 = poblacion.get(rnd.nextInt(cantidadHabitantes));
+                String hijaTemp1="";
+                String hijaTemp2="";
+               // System.out.println(" Habitante 1 :" + hab1);
+               // System.out.println(" Habitante 2 :" + hab2);
+                if(rnd.nextInt(100)<=49) {
+                 hijas=cruce(habit1,habit2,rnd.nextInt(largoSolucion));
+                }
+                //System.out.println("Hijas sin mutar :"+hijas);
+                // System.out.println("M solucion :"+mejorSolucion);
+                // System.out.println("MEJOR de las Hijas : ["+mejorSolucion+"] - FITNESS : "+mejorFitness);
+                
+               // hijaTemp1=mutacion(hijas.get(0),rnd);
+                //hijaTemp2=mutacion(hijas.get(1),rnd);
+                hijaTemp1=hijas.get(0);
+                hijaTemp2=hijas.get(1);
+               // System.out.println("Hija mutada 1 : "+hija1+" | Fitness : "+fitness(lista, hija1));System.out.println("Hija mutada 2 : "+hija2+" | Fitness : "+fitness(lista, hija2));
+               // hijas.clear();
+                hijas.set(0, hijaTemp1);
+                hijas.set(1, hijaTemp2);
+                //System.out.println("hijasss ->"+hijas.get(0));
+               // System.out.println(" Coleccion hijas : "+hijas);
+                mejorSolucion=mejorDeLaPoblacion(lista,hijas);
+                mejorFitness=fitness(lista,mejorSolucion);
+              //  System.out.println("MEJOR de las Hijas : ["+mejorSolucion+"] - FITNESS : "+mejorFitness);
+
+                segundaPoblacion.add(hijas.get(0));
+                segundaPoblacion.add(hijas.get(1));
+               
+            }
+            
+            System.out.println("Mejor Solucion 2 :" +mejorSolucion+"|mejor Fitness :"+mejorFitness);
+           System.out.println("-------------------------------------------------------------------------"); 
+          // mejorHabitante=mejorDeLaPoblacion(lista, segundaPoblacion);
+          // System.out.println("Mejor de la Poblacion 2: ["+mejorHabitante+"]-Fitness ["+fitness(lista, mejorHabitante)+"]");  
+           System.out.println("-------------------------------------------------------------------------"); 
+           * /
 //--------------------------------Gradiente Ascendente-------------------------------------------------------- 
                
            /*   
@@ -170,13 +275,66 @@ public class Permutar
          
 	}
         
+       
+        
+        public static void ordenarAscedentePoblacion(List<String> poblacion){
+            
+            for (int i = 0; i < poblacion.size(); i++) {
+                
+            }
+        }
+        
+        public static void llenarConGradienteAscedente(Map<String,Ciudad> lista,List<String> poblacion,String ciudades,Random rnd,int cantidad){
+            String solVecina = getVecina(newSolAleatoria(ciudades, rnd), rnd);
+           // System.out.println("Sol Vecina :" + solVecina);
+            double fitnessVecina = fitness(lista, solVecina);
+            String solMejor = newSolAleatoria(ciudades, rnd);
+           
+              double mejorFitnes=fitness(lista,solMejor);
+              if(mejorFitnes>fitnessVecina){
+                  solMejor=solVecina;
+                  
+              }
+          
+            int contador = 0;
+            // Ciclo de Cnd de termino
+            for (int j = 0; j < 50; j++) {
+            
+              solVecina=newSolAleatoria(solMejor,rnd);
+                for (int i = 0; i < cantidad; i++) {
+                
+                solVecina=getVecina(solMejor,rnd);
+                double fitnesVeci =fitness(lista,solVecina);
+                
+                if(fitnesVeci<mejorFitnes){
+                    mejorFitnes=fitnesVeci;
+                    solMejor=solVecina;
+                    contador=0;
+                   // System.out.println("Mejor Sol:"+solMejor+"| mejor fitness :"+mejorFitnes);
+                }
+                else{
+                    contador++;
+                    if(contador==15){
+                        break;
+                    }
+                }
+                poblacion.add(solMejor);
+                    //System.out.println("Mejor Solucion Gradiente :"+mejorFitnes+" | indice :"+i); 
+                contador=0;
+            }
+                
+                
+            }
+            System.out.println("mejorSOL : "+1+"fitness Gradiente Asc : "+mejorFitnes);
+        }
+        
         public static String mejorDeLaPoblacion(Map<String, Ciudad> lista,List<String> poblacion){
             double mejorFitness=fitness(lista,poblacion.get(0));
             String mejorSolucion=poblacion.get(0);
             double fitnessHab;
             for (int i = 0; i < poblacion.size(); i++) {
                 fitnessHab=fitness(lista,poblacion.get(i));
-                if (mejorFitness<fitnessHab) {
+                if (mejorFitness>fitnessHab) {
                     mejorSolucion=poblacion.get(i);
                     mejorFitness=fitnessHab;
                 }
